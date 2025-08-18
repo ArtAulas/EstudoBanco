@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -17,6 +19,7 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import kotlinx.coroutines.flow.Flow
 
 
 @Composable
@@ -34,14 +37,21 @@ fun List1(modifier: Modifier = Modifier) {
 
 @Composable
 fun List(db : AppDatabase,modifier: Modifier = Modifier) {
-    val userDao = db.userDao()
-    val users : List<User> = userDao.getAll()
-    Column(){
-        for (user in users){
-            Text(
-                text = "${user.id}: ${user.firstName} ${user.lastName}",
-                modifier=modifier.padding(24.dp)
-            )
+    val usersFlow = db.userDao().getAll()
+    val users by usersFlow.collectAsState(initial = emptyList())
+    if (users.isEmpty()){
+      Text(
+          text="Não há usuários cadastrados",
+          modifier=modifier.padding(24.dp)
+      )
+    }else{
+        Column(){
+            for (user in users){
+                Text(
+                    text = "${user.id}: ${user.firstName} ${user.lastName}",
+                    modifier=modifier.padding(24.dp)
+                )
+            }
         }
     }
 }
@@ -56,7 +66,7 @@ data class User(
 @Dao
 interface UserDao{
     @Query("SELECT * FROM users")
-    fun getAll() : List<User>
+    fun getAll() : Flow<List<User>>
 
     @Query("SELECT * FROM users WHERE id in (:userIds)")
     fun loadAllByIds(userIds: IntArray) : List<User>

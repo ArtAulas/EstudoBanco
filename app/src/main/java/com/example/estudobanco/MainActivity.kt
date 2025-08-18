@@ -51,12 +51,6 @@ fun Greeting(db : AppDatabase,modifier: Modifier = Modifier) {
             text = "List of Users:",
             modifier = modifier.padding(24.dp)
         )
-        /*Button(onClick={num.intValue++}){
-            Text(
-                text = "Hello Arthur!",
-                modifier = modifier.padding(24.dp)
-            )
-        }*/
         List(db)
     }
 }
