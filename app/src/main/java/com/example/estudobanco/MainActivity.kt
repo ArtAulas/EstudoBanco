@@ -5,20 +5,17 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
-import com.example.estudobanco.ui.theme.EstudoBancoTheme
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,27 +27,38 @@ class MainActivity : ComponentActivity() {
         ).build()
         enableEdgeToEdge()
         setContent {
-            EstudoBancoTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        db = db,
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
-            }
+            MyApp(db)
         }
     }
 }
 
 @Composable
-fun Greeting(db : AppDatabase,modifier: Modifier = Modifier) {
-    val num = remember{ mutableIntStateOf(0)} //Variável State
+fun MyApp(db: AppDatabase) {
+    val navController = rememberNavController()
 
+    NavHost(
+        navController = navController,
+        startDestination = "main"
+    ) {
+        composable("main") {
+            Greeting(db,navController)
+        }
+        composable("second") {
+            Greeting2("Arthur",navController)
+        }
+    }
+}
+
+@Composable
+fun Greeting(db : AppDatabase,navController : NavController,modifier: Modifier = Modifier) {
     Column {
         Text(
             text = "List of Users:",
             modifier = modifier.padding(24.dp)
         )
         List(db)
+        Button(onClick = { navController.navigate("second") }) {
+            Text("Go to Second Screen")
+        }
     }
 }
