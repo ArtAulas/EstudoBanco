@@ -1,13 +1,14 @@
 package com.example.estudobanco
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -17,20 +18,31 @@ import androidx.room.Database
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
-import androidx.room.Room
 import androidx.room.RoomDatabase
 import kotlinx.coroutines.flow.Flow
 
-
+@Preview(showSystemUi = true)
 @Composable
 fun List1(modifier: Modifier = Modifier) {
-    val lettersArray = arrayOf('Z','X','Y','W','S')
-    Column(){
+    val lettersArray = arrayOf("Art","Pier","Banana","Joker")
+    Column(modifier=modifier
+                    .padding(24.dp)
+    ){
         for (letter in lettersArray){
-            Text(
-                text = "Letter: $letter",
-                modifier=modifier.padding(24.dp)
-            )
+            Row(modifier = modifier
+                .padding(24.dp)
+            ) {
+                Text(
+                    text = "1:",
+                    modifier=modifier.padding(end = 24.dp)
+                )
+                Text(
+                    text = letter
+                )
+                Text(
+                    text = "\n X"
+                )
+            }
         }
     }
 }
@@ -45,12 +57,24 @@ fun List(db : AppDatabase,modifier: Modifier = Modifier) {
           modifier=modifier.padding(24.dp)
       )
     }else{
-        Column(){
+        Column(modifier=modifier
+            .padding(24.dp)
+        ){
             for (user in users){
-                Text(
-                    text = "${user.id}: ${user.firstName} ${user.lastName}",
-                    modifier=modifier.padding(24.dp)
-                )
+                Row(modifier = modifier
+                    .padding(24.dp)
+                ) {
+                    Text(
+                        text = "${user.id}:",
+                        modifier=modifier.padding(end = 24.dp)
+                    )
+                    Text(
+                        text = user.firstName.toString()
+                    )
+                    Text(
+                        text = " ${user.lastName}"
+                    )
+                }
             }
         }
     }

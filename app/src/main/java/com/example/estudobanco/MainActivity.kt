@@ -44,7 +44,7 @@ fun MyApp(db: AppDatabase) {
             Greeting(db,navController)
         }
         composable("second") {
-            Greeting2("Arthur",navController)
+            Greeting2(db,navController)
         }
     }
 }
@@ -58,7 +58,7 @@ fun Greeting(db : AppDatabase,navController : NavController,modifier: Modifier =
         )
         List(db)
         Button(onClick = { navController.navigate("second") }) {
-            Text("Go to Second Screen")
+            Text("Go to User Form")
         }
     }
 }
