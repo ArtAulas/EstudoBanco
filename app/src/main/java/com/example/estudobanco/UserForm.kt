@@ -22,7 +22,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
-fun Greeting2(db : AppDatabase,navController : NavController, modifier: Modifier = Modifier) {
+fun Greeting2(db : AppDatabase,navController : NavController,sharedViewModel: SharedViewModel, modifier: Modifier = Modifier) {
+    val user = sharedViewModel.selectedUser
     Column {
         Text(
             text = "Hello User!\nInsert Data in the Database!",
@@ -31,7 +32,12 @@ fun Greeting2(db : AppDatabase,navController : NavController, modifier: Modifier
         Button(onClick = { navController.navigate("main") }) {
             Text("Go Back")
         }
-        Form(db,navController=navController)
+        if (user == null){
+            Form(db,navController=navController, id = 0, firstName = "", lastName = "")
+        } else{
+            Form(db,navController=navController,
+                id = user.id, firstName = user.firstName.toString(), lastName = user.lastName.toString())
+        }
     }
 }
 
@@ -41,10 +47,11 @@ fun registerUser(db : AppDatabase,id: Int, firstName:String, lastName:String){
 }
 
 @Composable
-fun Form(db : AppDatabase,modifier: Modifier = Modifier,navController : NavController){
-    val formID = remember { mutableIntStateOf(0) }
-    val formFirstName = remember { mutableStateOf("") }
-    val formLastName = remember { mutableStateOf("") }
+fun Form(db : AppDatabase,modifier: Modifier = Modifier,navController : NavController
+         ,id: Int, firstName:String, lastName:String){
+    val formID = remember { mutableIntStateOf(id) }
+    val formFirstName = remember { mutableStateOf(firstName) }
+    val formLastName = remember { mutableStateOf(lastName) }
     Column(horizontalAlignment = Alignment.CenterHorizontally){
         TextField(
             value = formID.intValue.toString(),
